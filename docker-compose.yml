@@ -1,0 +1,31 @@
+version: '2.4'
+services:
+  api-manager:
+    build: ./apimanager
+    volumes:
+      - ./conf/apim:/home/wso2carbon/wso2-config-volume
+    ports:
+      - "9444:9444"
+      - "8281:8281"
+      - "8282:8282"
+      - "8244:8244"
+      - "9099:9099"
+      - "9100:9100"
+  streaming-integrator:
+    build: ./streaming-integrator
+    # depends_on:
+    #   api-manager:
+    #     condition: service_healthy
+    volumes:
+      - ./conf/si/wso2-config-volume:/home/wso2carbon/wso2-config-volume
+    ports:
+      - "9443:9443"
+  tooling:
+    build: ./tooling
+    depends_on:
+      - streaming-integrator
+    volumes:
+      - ./conf/tooling:/home/wso2carbon/wso2-config-volume
+    ports:
+      - "9390:9390"
+  # docker run -p 9444:9443 -p 8006:8006 wso2/streaming-integrator
